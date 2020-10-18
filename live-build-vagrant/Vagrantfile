@@ -70,6 +70,6 @@ Vagrant.configure("2") do |config|
     apt purge -y
     apt -y autoremove
     apt -y dist-upgrade
-    apt install live-build
+    apt install live-build curl git cdebootstrap
   SHELL
 end
