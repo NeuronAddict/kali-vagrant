@@ -14,6 +14,9 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "kalilinux/rolling"
 
+
+  config.vm.disk :disk, size: "80GB", primary: true
+
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -64,13 +67,34 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-    apt update
-    apt purge -y amap braa casefile cisco-torch copy-router-config dmitry dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax exploitdb fierce firewalk fragrouter goofile lbd maltego* masscan metagoofil nmap p0f parsero recon-ng set smtp-user-enum snmpcheck sslsplit sslyze thc-ipv6 theharvester tlssled twofi urlcrazy wireshark xplico ismtp intrace hping3  bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant  jsql lynis nmap ohrwurm openvas-cli openvas-manager openvas-scanner oscanner  sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia aircrack-ng asleap bluelog blueranger bluesnarfer bully cowpatty crackle eapmd5pass fern-wifi-cracker   gqrx kalibrate-rtl  kismet mdk3 mfcuk mfoc mfterm multimon-ng pixiewps reaver redfang spooftooph wifi-honey  wifite apache-users    burpsuite cutycapt davtest  dirb dirbuster    jboss-autopwn joomscan jsql  padbuster paros parsero plecost   recon-ng skipfish sqlmap sqlninja sqlsus  uniscan   webscarab websploit wfuzz wpscan xsser zaproxy burpsuite dnschef fiked hamster-sidejack hexinject iaxflood inviteflood ismtp mitmproxy ohrwurm protos-sip rebind responder rtpbreak rtpinsertsound rtpmixsound sctpscan siparmyknife sipp sipvicious sniffjoke sslsplit thc-ipv6 voiphopper webscarab wifi-honey wireshark xspy yersinia zaproxy cryptcat cymothoa dbd dns2tcp  httptunnel  nishang polenum powersploit pwnat ridenum sbd  webshells weevely casefile cutycapt dos2unix dradis   metagoofil nipper-ng pipal armitage backdoor-factory cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch crackle jboss-autopwn linux-exploit-suggester  set shellnoob sqlmap thc-ipv6 yersinia beef-xss binwalk bulk-extractor chntpw  dc3dd ddrescue dumpzilla extundelete foremost galleta guymager  p0f pdf-parser pdfid    xplico dhcpig  iaxflood inviteflood ipv6-toolkit mdk3 reaver rtpflood slowhttptest t50 termineter thc-ipv6 thc-ssl-dos  burpsuite cewl chntpw cisco-auditing-tool cmospwd  crunch  gpp-decrypt hash-identifier  john johnny   maskprocessor multiforcer ncrack oclgausscrack pack patator polenum rainbowcrack rcracki-mt rsmangler statsprocessor thc-pptp-bruter truecrack webscarab wordlists zaproxy apktool dex2jar  edb-debugger  javasnoop jd ollydbg smali valgrind yara android-sdk apktool arduino dex2jar sakis3g smali kali-defaults kali-desktop-base xfce4*
+  config.vm.provision "shell", env: {"DEBIAN_FRONTEND" => "noninteractive"}, inline: <<-SHELL
+
+    set -e
+    set -x
+
+    for package_name in {kali-defaults,kali-menu,kali-themes,kali-themes-common,kali-hidpi-mode}
+    do
+        apt-get purge $package_name
+        echo apt-get purge $(apt-cache depends $package_name | awk '{ print $2 }' | grep -v kali-linux-core | tr '\n' ' ')
+        apt-get purge $(apt-cache depends $package_name | awk '{ print $2 }' | grep -v kali-linux-core | tr '\n' ' ')
+    done
+
+    apt purge -y amap braa casefile cisco-torch copy-router-config dmitry dnsenum dnsmap dnsrecon dnstracer dnswalk dotdotpwn enum4linux enumiax exploitdb fierce firewalk fragrouter goofile lbd maltego* masscan metagoofil nmap p0f parsero recon-ng set smtp-user-enum snmpcheck sslsplit sslyze thc-ipv6 theharvester tlssled twofi urlcrazy wireshark xplico ismtp intrace hping3  bed cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch copy-router-config doona dotdotpwn greenbone-security-assistant  jsql lynis nmap ohrwurm openvas-cli openvas-manager openvas-scanner oscanner  sfuzz sidguesser siparmyknife sqlmap sqlninja sqlsus thc-ipv6 tnscmd10g unix-privesc-check yersinia aircrack-ng asleap bluelog blueranger bluesnarfer bully cowpatty crackle eapmd5pass fern-wifi-cracker   gqrx kalibrate-rtl  kismet mdk3 mfcuk mfoc mfterm multimon-ng pixiewps reaver redfang spooftooph wifi-honey  wifite apache-users    burpsuite cutycapt davtest  dirb dirbuster    jboss-autopwn joomscan jsql  padbuster paros parsero plecost   recon-ng skipfish sqlmap sqlninja sqlsus  uniscan   webscarab websploit wfuzz wpscan xsser zaproxy burpsuite dnschef fiked hamster-sidejack hexinject iaxflood inviteflood ismtp mitmproxy ohrwurm protos-sip rebind responder rtpbreak rtpinsertsound rtpmixsound sctpscan siparmyknife sipp sipvicious sniffjoke sslsplit thc-ipv6 voiphopper webscarab wifi-honey wireshark xspy yersinia zaproxy cryptcat cymothoa dbd dns2tcp  httptunnel  nishang polenum powersploit pwnat ridenum sbd  webshells weevely casefile cutycapt dos2unix dradis   metagoofil nipper-ng pipal armitage backdoor-factory cisco-auditing-tool cisco-global-exploiter cisco-ocs cisco-torch crackle jboss-autopwn linux-exploit-suggester  set shellnoob sqlmap thc-ipv6 yersinia beef-xss binwalk bulk-extractor chntpw  dc3dd ddrescue dumpzilla extundelete foremost galleta guymager  p0f pdf-parser pdfid    xplico dhcpig  iaxflood inviteflood ipv6-toolkit mdk3 reaver rtpflood slowhttptest t50 termineter thc-ipv6 thc-ssl-dos  burpsuite cewl chntpw cisco-auditing-tool cmospwd  crunch  gpp-decrypt hash-identifier  john johnny   maskprocessor multiforcer ncrack oclgausscrack pack patator polenum rainbowcrack rcracki-mt rsmangler statsprocessor thc-pptp-bruter truecrack webscarab wordlists zaproxy apktool dex2jar  edb-debugger  javasnoop jd ollydbg smali valgrind yara android-sdk apktool arduino dex2jar sakis3g smali kali-defaults kali-desktop-base xfce4* postgres* firefox* php*
     apt purge -y
-    apt -y autoremove
-    apt -y dist-upgrade
-    apt install live-build curl git cdebootstrap auto-apt-proxy apt-cacher-ng
+
+    apt-get -y autoremove
+    apt-get -y update
+    apt-get -y check
+    apt-get -y -f install
+    apt-get -y autoclean
+
+    apt-get -y autoremove
+
+    apt install -y live-build curl git cdebootstrap auto-apt-proxy apt-cacher-ng
     systemctl start apt-cacher-ng
+    git clone https://gitlab.com/kalilinux/build-scripts/live-build-config.git /home/vagrant/live-build-config
+    chown -R vagrant /home/vagrant/live-build-config
+    cd /home/vagrant/live-build-config && patch -p1 < /vagrant/apt-cacher-ng.patch
+    apt -y --no-install-recommends dist-upgrade
   SHELL
 end
